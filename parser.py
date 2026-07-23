@@ -35,6 +35,7 @@ class Parser:
         invalid nb_drones value.
         """
         connection_set: set[tuple[str, str]] = set()
+        find = True
 
         with open(self.file_name, "r") as f:
             for line_num, line in enumerate(f, 1):
@@ -44,6 +45,10 @@ class Parser:
                     continue
 
                 try:
+                    if find:
+                        if not line.startswith("nb_drones:"):
+                            raise ValueError(f"The nb drons not find ")
+                        find = False
                     if line.startswith("nb_drones:"):
                         self._parse_nb_drones(line, line_num)
 
@@ -124,9 +129,16 @@ be greater than 0")
         Raises ValueError if a key appears more than once.
         """
         meta: dict[str, str] = {}
+        # print(raw)
+        if "[" not in raw or "]" not in raw:
+            raise ValueError(f"The '{raw}' most has a format of [metat data] >>[]")
         raw = raw.strip("[] ")
+        # print(raw)
 
         for token in raw.split():
+            # print(token)
+            if "=" not in token:
+                raise ValueError(f"it most has a '=' on it ")
             if "=" not in token:
                 continue
 
@@ -156,11 +168,12 @@ be greater than 0")
         value = line.split(":", 1)[1].strip()
         parts = value.split()
 
-        if len(parts) < 3:
+        if len(parts[1:]) < 3:
             raise ValueError(f"Invalid {prefix} line: \
 expected name x y [metadata]")
 
         name = parts[0]
+        # print((parts[3]))
         if "-" in name or " " in name:
             raise ValueError(f"Zone name '{name}' must \
 not contain dashes or spaces")
@@ -168,13 +181,23 @@ not contain dashes or spaces")
         try:
             x = int(parts[1])
             y = int(parts[2])
+            # print(parts)
+            # print(len(parts))
+
         except ValueError:
             raise ValueError(f"Zone '{name}': coordinates must be integers")
+
+        if not parts[3].startswith("["):
+            raise ValueError(
+                f"Zone '{name}': expected only two coordinates (x y), "
+                f"found extra value '{parts[3]}'"
+            )
 
         if len(parts) > 3:
             meta_str = " ".join(parts[3:])
             meta = self._parse_metadata(meta_str)
 
+            # print(meta)
             if "zone" in meta:
                 zone_type = meta["zone"]
                 if zone_type not in VALID_ZONE_TYPES:
@@ -182,6 +205,13 @@ not contain dashes or spaces")
                         f"Zone '{name}': invalid zone type '{zone_type}'. "
                         f"Must be one of {VALID_ZONE_TYPES}"
                     )
+            allowed_keys = {"color", "max_drones", "zone"}
+
+            invalid_keys = set(meta) - allowed_keys
+
+            if invalid_keys:
+                raise ValueError(f"Invalid metadata keys: {', '.join(sorted(invalid_keys))}")
+
             if "color" in meta:
                 color = meta["color"]
             if "max_drones" in meta:
@@ -192,10 +222,8 @@ not contain dashes or spaces")
                         raise ValueError()
 
                 except ValueError:
-                    raise ValueError(
-                        f"Zone '{name}': max_drones \
-must be " f"a positive integer"
-                    )
+                    raise ValueError(f"Zone '{name}': max_drones \
+must be " f"a positive integer")
 
         return Zone(name, x, y, color, max_drones, zone_type)
 
@@ -237,8 +265,15 @@ connect to itself")
         if zone2 not in self.zone:
             raise ValueError(f"Line {line_num}: undefined zone '{zone2}'")
 
+        # print(meta_str)
         if meta_str:
             meta = self._parse_metadata(meta_str)
+            allowed_keys = {"max_link_capacity"}
+
+            invalid_keys = set(meta) - allowed_keys
+            if "max_link_capacity" not in meta or len(meta) != 1:
+                raise ValueError(f"Ivalide metadata {invalid_keys}")
+            # print (meta)
             if "max_link_capacity" in meta:
                 try:
                     max_link_capacity = int(meta["max_link_capacity"])

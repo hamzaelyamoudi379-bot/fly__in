@@ -86,9 +86,9 @@ Zone types:
 
 | Type       | Cost       | Description                           |
 | ---------- | ---------- | ------------------------------------- |
-| normal     | 1 turn     | standard zone                         |
-| priority   | 1 turn     | same cost but pathfinding prefers it  |
-| restricted | 2 turns    | drone spends an extra turn in transit |
+| normal     | 1.0 turn     | standard zone                         |
+| priority   | 0.9 turn     | same cost but pathfinding prefers it  |
+| restricted | 2.0 turns    | drone spends an extra turn in transit |
 | blocked    | impossible | cannot be entered at all              |
 
 ---
@@ -172,6 +172,7 @@ This makes it much easier to understand what is happening, especially on complex
 
 - [Breadth-first search](https://en.wikipedia.org/wiki/Breadth-first_search)
 - [Dijkstra algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
+- [Dijkstra algorithm](https://www.youtube.com/watch?v=rvxt42na8Ss)
 - [Multi-agent pathfinding](https://en.wikipedia.org/wiki/Multi-agent_pathfinding)
 - [Python typing module](https://docs.python.org/3/library/typing.html)
 - [mypy docs](https://mypy.readthedocs.io/)

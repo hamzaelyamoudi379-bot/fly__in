@@ -184,6 +184,8 @@ class Simulation:
                 continue
 
             if next_zone_obj.zone_type == "restricted":
+                if not self._zone_has_space(next_z):        # ← added
+                    continue 
                 if self.graph.add_drone_to_link(current, next_z):
                     self.graph.remove_drone_from_zone(current)
                     drone.in_transit = True

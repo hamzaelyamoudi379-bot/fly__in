@@ -1,6 +1,6 @@
 PY_FILES = zone.py connection.py graph.py parser.py dijkstra.py simulation.py main.py
 
-MAP ?= 03_ultimate_challenge.txt
+MAP ?= 01_linear_path.txt
 install:
 	pip install flake8 mypy colorama --break-system-packages
 
