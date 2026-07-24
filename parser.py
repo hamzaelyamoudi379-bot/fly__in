@@ -47,7 +47,7 @@ class Parser:
                 try:
                     if find:
                         if not line.startswith("nb_drones:"):
-                            raise ValueError(f"The nb drons not find ")
+                            raise ValueError("The nb drons not find ")
                         find = False
                     if line.startswith("nb_drones:"):
                         self._parse_nb_drones(line, line_num)
@@ -131,14 +131,15 @@ be greater than 0")
         meta: dict[str, str] = {}
         # print(raw)
         if "[" not in raw or "]" not in raw:
-            raise ValueError(f"The '{raw}' most has a format of [metat data] >>[]")
+            raise ValueError(f"The '{raw}' most has a format of \
+[metat data] >>[]")
         raw = raw.strip("[] ")
         # print(raw)
 
         for token in raw.split():
             # print(token)
             if "=" not in token:
-                raise ValueError(f"it most has a '=' on it ")
+                raise ValueError("it most has a '=' on it ")
             if "=" not in token:
                 continue
 
@@ -210,7 +211,9 @@ not contain dashes or spaces")
             invalid_keys = set(meta) - allowed_keys
 
             if invalid_keys:
-                raise ValueError(f"Invalid metadata keys: {', '.join(sorted(invalid_keys))}")
+                raise ValueError(
+                    f"Invalid metadata keys: {', '.join(sorted(invalid_keys))}"
+                )
 
             if "color" in meta:
                 color = meta["color"]

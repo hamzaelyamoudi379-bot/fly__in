@@ -32,7 +32,7 @@ def main() -> None:
     graph = Graph(parser)
     # for conn in graph.connections:
     #     print("         ", conn.zone1, conn.zone2)
-        
+
     # print(graph.connections)
     dijkstra = Dijkstra(graph)
 
