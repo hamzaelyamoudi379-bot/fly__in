@@ -68,7 +68,7 @@ class Dijkstra:
         and 1.0 for normal zones.
         """
         zone = self.graph.zones[zone_name]
-        if zone.zone_type == "blocked":
+        if zone.zone_type == "blocked" or zone.max_drones == 0:
             return float("inf")
         elif zone.zone_type == "restricted":
             return 2.0

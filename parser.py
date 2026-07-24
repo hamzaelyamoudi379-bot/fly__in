@@ -135,7 +135,6 @@ be greater than 0")
 [metat data] >>[]")
         raw = raw.strip("[] ")
         # print(raw)
-
         for token in raw.split():
             # print(token)
             if "=" not in token:
@@ -198,14 +197,6 @@ not contain dashes or spaces")
             meta_str = " ".join(parts[3:])
             meta = self._parse_metadata(meta_str)
 
-            # print(meta)
-            if "zone" in meta:
-                zone_type = meta["zone"]
-                if zone_type not in VALID_ZONE_TYPES:
-                    raise ValueError(
-                        f"Zone '{name}': invalid zone type '{zone_type}'. "
-                        f"Must be one of {VALID_ZONE_TYPES}"
-                    )
             allowed_keys = {"color", "max_drones", "zone"}
 
             invalid_keys = set(meta) - allowed_keys
@@ -215,13 +206,27 @@ not contain dashes or spaces")
                     f"Invalid metadata keys: {', '.join(sorted(invalid_keys))}"
                 )
 
+            # print(meta)
+            # if meta.values() == '':
+            #     raise ValueError("The Value is missing ' ' ")
+            for v in meta.values():
+                if not v:
+                    raise ValueError("The Value is missing ' ' ")
+            if "zone" in meta:
+                zone_type = meta["zone"]
+                if zone_type not in VALID_ZONE_TYPES:
+                    raise ValueError(
+                        f"Zone '{name}': invalid zone type '{zone_type}'. "
+                        f"Must be one of {VALID_ZONE_TYPES}"
+                    )
+
             if "color" in meta:
                 color = meta["color"]
             if "max_drones" in meta:
 
                 try:
                     max_drones = int(meta["max_drones"])
-                    if max_drones <= 0:
+                    if max_drones < 0:
                         raise ValueError()
 
                 except ValueError:
@@ -276,6 +281,9 @@ connect to itself")
             invalid_keys = set(meta) - allowed_keys
             if "max_link_capacity" not in meta or len(meta) != 1:
                 raise ValueError(f"Ivalide metadata {invalid_keys}")
+            for v in meta.values():
+                if not v:
+                    raise ValueError("The Value is missing ' ' ")
             # print (meta)
             if "max_link_capacity" in meta:
                 try:
